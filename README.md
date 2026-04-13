@@ -25,11 +25,11 @@ I thought it might help others too, so I cleaned it up and open sourced it.
 
 ## Live version
 
-Interactive UI with search and category filtering: tomerjann.github.io/llm-field-notes/
+Interactive UI with search and category filtering: [what-happens-when-llm](https://tomerjann.github.io/llm-field-notes)
 
 ## Companion project
 
-This is the reference layer for [what-happens-when-llm](link), a full walkthrough of everything that happens from the moment a user hits send to the moment a response streams back.
+This is the reference layer for [what-happens-when-llm](https://github.com/tomerjann/what-happens-when-you-prompt), a full walkthrough of everything that happens from the moment a user hits send to the moment a response streams back.
 
 ## Contributing
 
