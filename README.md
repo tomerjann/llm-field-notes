@@ -1,4 +1,4 @@
-# lm-field-notes
+# llm-field-notes
 
 LLM terms explained from an engineering angle, with the production implications, not just the definition.
 
