@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LLM Field Notes — Glossary</title>
+<meta name="description" content="A practical glossary of LLM terms for engineers building with AI."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#00E599",
+          "background-dark": "#0A0A0A",
+          "surface": "#141414",
+          "surface-hover": "#1F1F1F",
+          "text-main": "#EDEDED",
+          "muted": "#8A8F98",
+          "border-color": "#262626",
+          "accent-blue": "#3B82F6"
+        },
+        fontFamily: {
+          "display": ["Inter", "sans-serif"],
+          "body": ["Inter", "sans-serif"],
+          "mono": ["Inter", "monospace"]
+        },
+        borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem", "sm": "4px" }
+      }
+    }
+  }
+</script>
+<style>
+  body { background-color: #0A0A0A; color: #EDEDED; font-family: Inter, sans-serif; }
+  .gradient-text { background: linear-gradient(to right, #00E599, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .term-row { transition: background-color 150ms ease; border-bottom: 1px solid #262626; }
+  .term-row:hover { background-color: #141414; cursor: pointer; }
+  details > summary { list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] > summary .arrow { transform: rotate(180deg); }
+  .arrow { transition: transform 200ms ease; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #8A8F98; }
+  #search-modal { display: none; }
+  #search-modal.open { display: flex; }
+  .search-result:hover, .search-result-active { background-color: #1F1F1F; }
+  .category-card:hover { border-color: #00E599; background-color: #141414; }
+  .category-card { transition: border-color 150ms ease, background-color 150ms ease; }
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Search Modal -->
+<div id="search-modal" class="fixed inset-0 z-50 items-start justify-center pt-[15vh] bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true">
+  <div class="w-full max-w-xl mx-4 bg-surface border border-border-color rounded-lg overflow-hidden shadow-2xl">
+    <div class="flex items-center border-b border-border-color px-4">
+      <span class="material-symbols-outlined text-muted text-[20px] mr-3">search</span>
+      <input id="search-input" type="text" placeholder="Search terms..." autocomplete="off"
+        class="flex-1 bg-transparent text-text-main placeholder-muted py-4 text-sm focus:outline-none"/>
+      <button id="search-close" class="text-muted hover:text-text-main text-xs border border-border-color rounded px-1.5 py-0.5 ml-3">ESC</button>
+    </div>
+    <div id="search-results" class="max-h-80 overflow-y-auto py-2"></div>
+  </div>
+</div>
+
+<!-- Topbar -->
+<div class="sticky top-0 z-40 border-b border-border-color bg-[#0A0A0A]">
+  <div class="max-w-[1440px] mx-auto px-4 lg:px-10">
+    <header class="flex items-center justify-between py-3">
+      <div class="flex items-center gap-8">
+        <a href="#" class="flex items-center gap-3 text-white">
+          <div class="size-4 text-primary">
+            <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <span class="text-text-main text-lg font-bold tracking-tight">llm-field-notes</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-9">
+          <a id="nav-home" href="#" class="text-sm font-medium leading-normal transition-colors">Home</a>
+          <a href="https://github.com/tomerjann/llm-field-notes" target="_blank" rel="noopener" class="text-text-main text-sm font-medium leading-normal hover:text-primary transition-colors">GitHub</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-4">
+        <button id="search-trigger" class="hidden md:flex items-center gap-2 h-9 px-3 rounded-sm border border-border-color bg-surface text-muted text-sm hover:border-muted transition-colors min-w-[180px]">
+          <span class="material-symbols-outlined text-[18px]">search</span>
+          <span class="flex-1 text-left">Search</span>
+          <span class="text-xs border border-border-color rounded px-1 py-0.5">⌘K</span>
+        </button>
+        <button id="search-trigger-mobile" class="md:hidden text-muted hover:text-text-main">
+          <span class="material-symbols-outlined">search</span>
+        </button>
+      </div>
+    </header>
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div class="flex-1 w-full max-w-[1440px] mx-auto px-4 lg:px-10 flex relative">
+
+  <!-- Left Sidebar -->
+  <aside class="hidden lg:block w-[260px] shrink-0 border-r border-border-color py-8 pr-6 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto">
+    <div class="mb-4 px-3">
+      <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">Pillars</h3>
+    </div>
+    <nav id="sidebar-nav" class="space-y-0.5"></nav>
+  </aside>
+
+  <!-- Center Content -->
+  <main id="main-content" class="flex-1 min-w-0 py-12 px-4 lg:px-12 xl:px-16"></main>
+
+  <!-- Right Sidebar -->
+  <aside id="right-sidebar" class="hidden xl:block w-[220px] shrink-0 py-12 pl-6 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto"></aside>
+
+</div>
+
+<script>
+// ─── Config ──────────────────────────────────────────────────────────────────
+const GITHUB_REPO = 'https://github.com/tomerjann/llm-field-notes';
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+// To add a new term: add an entry to the correct category's `terms` array.
+// Fields: id (kebab-case slug), name, fullName, body, related (array of display names)
+const GLOSSARY = [
+  {
+    category: "Core Architecture",
+    slug: "core-architecture",
+    description: "The foundational building blocks of how LLMs are designed and built.",
+    terms: [
+      {
+        id: "llm",
+        name: "LLM",
+        fullName: "Large Language Model",
+        body: "A neural network trained on massive text corpora to predict and generate language. The foundation of modern AI assistants like Claude, GPT, and Gemini.",
+        related: ["Transformer", "Model Parameters", "Tokenizer"]
+      },
+      {
+        id: "transformer",
+        name: "Transformer",
+        fullName: "Transformer Architecture",
+        body: "The neural network architecture introduced in 2017 (\"Attention is All You Need\") that powers virtually all modern LLMs. Uses self-attention to process tokens in parallel, understanding relationships across the entire context.",
+        related: ["Attention", "KV Cache", "LLM"]
+      },
+      {
+        id: "attention",
+        name: "Attention",
+        fullName: "Self-Attention Mechanism",
+        body: "The core operation in a Transformer that lets every token \"look at\" every other token and weigh how relevant each is. This is what gives LLMs their ability to understand long-range dependencies in text.",
+        related: ["Transformer", "KV Cache", "Context Window"]
+      },
+      {
+        id: "ffn-layer",
+        name: "FFN Layer",
+        fullName: "Feed-Forward Network Layer",
+        body: "The second major component inside every Transformer block, after the attention layer. While attention lets tokens communicate with each other, the FFN processes each token independently through two linear transformations with a non-linearity in between. It is where most of the model's \"knowledge\" is actually stored: research shows that factual associations (Paris to France) live in FFN weights, not attention. In a typical LLM, FFN layers account for roughly 2/3 of all parameters. MoE architectures specifically replace the FFN layer with a pool of expert FFNs and a router, so understanding FFN is the key to understanding MoE.",
+        related: ["Transformer", "Attention", "MoE", "Dense Model", "Model Parameters"]
+      },
+      {
+        id: "model-parameters",
+        name: "Model Parameters",
+        fullName: "Weights and Biases",
+        body: "The numerical values inside a model: billions of floating-point numbers that encode everything the model learned during training. A \"70B model\" has 70 billion parameters. More parameters does not always mean better performance.",
+        related: ["Fine Tuning", "Quantization", "RAM"]
+      },
+      {
+        id: "tokenizer",
+        name: "Tokenizer",
+        fullName: "Tokenization",
+        body: "The system that converts raw text into tokens: small chunks (words, subwords, or characters) the model actually processes. \"Hello world\" might be 2 tokens; a rare word might be split into 4. Token count directly impacts cost and context limits.",
+        related: ["Context Window", "LLM", "Logits"]
+      },
+      {
+        id: "dense-model",
+        name: "Dense Model",
+        fullName: "Dense Neural Network",
+        body: "A model where every parameter is activated for every token: the standard architecture, as opposed to Mixture of Experts. GPT-2, LLaMA, and Claude are dense models. Simpler to train and reason about, but compute cost scales directly with parameter count, unlike MoE.",
+        related: ["MoE", "Model Parameters", "Inference"]
+      },
+      {
+        id: "moe",
+        name: "MoE",
+        fullName: "Mixture of Experts",
+        body: "An architecture where the model contains many specialized sub-networks (\"experts\") and a router that activates only a few of them per token. Used in GPT-4, Mixtral, and others: enables massive parameter counts at a fraction of the compute cost.",
+        related: ["Transformer", "Model Parameters", "Inference", "FFN Layer", "Dense Model"]
+      },
+      {
+        id: "multimodal",
+        name: "Multimodal",
+        fullName: "Multimodal Models",
+        body: "Models that can process and reason across multiple types of data: text, images, audio, video, code. Claude 3, GPT-4o, and Gemini are all multimodal. Requires encoding different modalities into a shared latent space the LLM can attend over.",
+        related: ["LLM", "Embedding", "Latent Space"]
+      }
+    ]
+  },
+  {
+    category: "Memory & Compute",
+    slug: "memory-compute",
+    description: "Hardware constraints and optimization techniques that dictate production performance.",
+    terms: [
+      {
+        id: "kv-cache",
+        name: "KV Cache",
+        fullName: "Key-Value Cache",
+        body: "A performance optimization that saves the intermediate attention computations (keys and values) for tokens already processed, so the model does not recompute them on each new token. Critical for fast inference in long contexts.",
+        related: ["Attention", "Inference", "RAM"]
+      },
+      {
+        id: "ram",
+        name: "RAM",
+        fullName: "Random Access Memory",
+        body: "In AI, RAM (and GPU VRAM) is the primary bottleneck for running models. A 70B model in 16-bit precision needs roughly 140GB of VRAM. Quantization is the main technique to reduce this footprint.",
+        related: ["Model Parameters", "Quantization", "Inference"]
+      },
+      {
+        id: "quantization",
+        name: "Quantization",
+        fullName: "Weight Quantization",
+        body: "Compressing a model by reducing the numerical precision of its weights: e.g. from 32-bit floats to 4-bit integers. Trades a small accuracy drop for dramatically lower memory and faster inference. Used to run large models on consumer hardware.",
+        related: ["RAM", "Model Parameters", "Inference"]
+      },
+      {
+        id: "inference",
+        name: "Inference",
+        fullName: "Model Inference",
+        body: "The act of running a trained model to generate output, as opposed to training. When you send a message to Claude, that is inference. Optimizing inference (speed, cost, memory) is a major engineering challenge at scale.",
+        related: ["KV Cache", "RAM", "Quantization"]
+      }
+    ]
+  },
+  {
+    category: "Vectors & Retrieval",
+    slug: "vectors-retrieval",
+    description: "How meaning becomes math, and how to search it efficiently.",
+    terms: [
+      {
+        id: "vector",
+        name: "Vector",
+        fullName: "Embedding Vector",
+        body: "A list of numbers (e.g. 1536 floats) that encodes the semantic meaning of text. Texts with similar meaning have vectors that are numerically close to each other. The backbone of semantic search and RAG.",
+        related: ["Embedding", "RAG", "Vector DB"]
+      },
+      {
+        id: "embedding",
+        name: "Embedding",
+        fullName: "Semantic Embedding",
+        body: "The process of converting text, images, or other data into a dense vector representation using an encoder model. \"Embedding a document\" means turning it into a fixed-size vector that captures its meaning.",
+        related: ["Vector", "RAG", "Fine Tuning", "Latent Space"]
+      },
+      {
+        id: "rag",
+        name: "RAG",
+        fullName: "Retrieval-Augmented Generation",
+        body: "A pattern where relevant documents are fetched from a database at query time and injected into the model's context, giving it up-to-date or domain-specific knowledge without retraining. Your own private search engine combined with an LLM.",
+        related: ["Vector", "Embedding", "Context Engineering", "Vector DB"]
+      },
+      {
+        id: "vector-db",
+        name: "Vector DB",
+        fullName: "Vector Database",
+        body: "A database optimized for storing and querying embedding vectors using approximate nearest-neighbor search. Examples: Pinecone, Weaviate, pgvector. The storage layer that makes RAG possible at scale.",
+        related: ["RAG", "Vector", "Embedding"]
+      },
+      {
+        id: "latent-space",
+        name: "Latent Space",
+        fullName: "High-Dimensional Latent Space",
+        body: "The abstract mathematical space where embeddings live. Concepts that are semantically similar cluster together; analogies appear as vector arithmetic (king minus man plus woman equals queen). The geometry of this space is what makes semantic search possible.",
+        related: ["Embedding", "Vector", "Attention"]
+      }
+    ]
+  },
+  {
+    category: "Generation & Sampling",
+    slug: "generation-sampling",
+    description: "The knobs that control how a model decides what to say next.",
+    terms: [
+      {
+        id: "temperature",
+        name: "Temperature",
+        fullName: "Sampling Temperature",
+        body: "A number (usually 0 to 2) that controls how random the model's outputs are. Low temperature (toward 0) means deterministic and repetitive. High temperature (toward 2) means creative and unpredictable. Most production use cases sit between 0.2 and 0.9.",
+        related: ["Top-p", "Logits", "Inference"]
+      },
+      {
+        id: "top-p",
+        name: "Top-p",
+        fullName: "Nucleus Sampling",
+        body: "A sampling strategy that restricts the model to only consider the smallest set of tokens whose cumulative probability exceeds p. For example, top-p=0.9 ignores the bottom 10% of unlikely tokens. Often used alongside temperature.",
+        related: ["Temperature", "Logits"]
+      },
+      {
+        id: "logits",
+        name: "Logits",
+        fullName: "Raw Output Logits",
+        body: "The raw, unnormalized scores the model outputs for every possible next token before sampling. Logits are converted to probabilities via softmax, then sampled based on temperature and top-p settings.",
+        related: ["Temperature", "Top-p", "Tokenizer"]
+      }
+    ]
+  },
+  {
+    category: "Training & Alignment",
+    slug: "training-alignment",
+    description: "How models are built, specialized, and made safe to deploy.",
+    terms: [
+      {
+        id: "fine-tuning",
+        name: "Fine Tuning",
+        fullName: "Supervised Fine-Tuning (SFT)",
+        body: "Continuing the training of a base model on a curated, domain-specific dataset to specialize its behavior. More efficient than training from scratch, but requires quality data and can cause \"catastrophic forgetting\" of prior knowledge.",
+        related: ["RLHF", "Model Parameters", "LoRA", "Embedding"]
+      },
+      {
+        id: "rlhf",
+        name: "RLHF",
+        fullName: "Reinforcement Learning from Human Feedback",
+        body: "A training technique where human raters rank model outputs, and those preferences train a reward model, which then guides the LLM via reinforcement learning to produce more helpful, harmless, and honest responses. Used by Claude, GPT-4, and others.",
+        related: ["Fine Tuning", "Evals"]
+      },
+      {
+        id: "hallucination",
+        name: "Hallucination",
+        fullName: "Model Hallucination",
+        body: "When a model confidently generates factually incorrect or fabricated information. Happens because LLMs are trained to produce plausible-sounding text, not verified facts. RAG and grounding techniques help mitigate this.",
+        related: ["RAG", "Grounding", "Evals"]
+      },
+      {
+        id: "lora",
+        name: "LoRA",
+        fullName: "Low-Rank Adaptation",
+        body: "An efficient fine-tuning technique that freezes the base model weights and adds small trainable \"adapter\" matrices. Trains in a fraction of the time and memory of full fine-tuning, while achieving comparable results. The dominant fine-tuning method in practice.",
+        related: ["Fine Tuning", "Model Parameters", "Quantization"]
+      },
+      {
+        id: "distillation",
+        name: "Distillation",
+        fullName: "Knowledge Distillation",
+        body: "Training a smaller \"student\" model to mimic the outputs of a larger \"teacher\" model. The student learns not just the correct answers but the teacher's probability distributions, capturing nuanced knowledge. How many efficient small models are made.",
+        related: ["Fine Tuning", "LoRA", "Model Parameters"]
+      }
+    ]
+  },
+  {
+    category: "Evaluation",
+    slug: "evaluation",
+    description: "How you know whether your model or pipeline is actually working.",
+    terms: [
+      {
+        id: "evals",
+        name: "Evals",
+        fullName: "Evaluations / Benchmarks",
+        body: "Systematic tests used to measure a model's capabilities, accuracy, or safety across specific tasks. Good evals are what separate rigorous AI development from vibes-based iteration. Everything from math benchmarks to red-teaming.",
+        related: ["Harness Engineering", "RLHF", "Fine Tuning"]
+      },
+      {
+        id: "harness-engineering",
+        name: "Harness Engineering",
+        fullName: "Eval Harness Engineering",
+        body: "The craft of building the infrastructure to run evaluations at scale: test runners, dataset pipelines, scoring logic, and result tracking. A well-built eval harness is what makes it possible to iterate on a model safely and quickly.",
+        related: ["Evals", "Prompt Engineering"]
+      }
+    ]
+  },
+  {
+    category: "Prompting & Context",
+    slug: "prompting-context",
+    description: "Techniques for getting reliable, high-quality outputs from a model.",
+    terms: [
+      {
+        id: "prompt-engineering",
+        name: "Prompt Engineering",
+        fullName: "Prompt Engineering",
+        body: "The practice of carefully crafting the text inputs to a model to elicit better, more reliable outputs: using techniques like few-shot examples, chain-of-thought, role instructions, and output formatting constraints.",
+        related: ["Context Engineering", "System Prompt", "Chain of Thought", "Few-shot"]
+      },
+      {
+        id: "context-engineering",
+        name: "Context Engineering",
+        fullName: "Context Window Engineering",
+        body: "The broader discipline of deciding what information goes into the model's context window: not just the prompt, but retrieved documents, tool results, memory, conversation history, and how it is all structured and prioritized.",
+        related: ["Prompt Engineering", "RAG", "Context Window"]
+      },
+      {
+        id: "system-prompt",
+        name: "System Prompt",
+        fullName: "System / Developer Prompt",
+        body: "A hidden instruction block sent at the start of a conversation that sets the model's persona, rules, and behavior before any user message arrives. The primary mechanism operators use to customize LLM behavior for their product.",
+        related: ["Prompt Engineering", "Context Engineering"]
+      },
+      {
+        id: "chain-of-thought",
+        name: "Chain of Thought",
+        fullName: "Chain-of-Thought (CoT) Prompting",
+        body: "A prompting technique that instructs the model to reason step-by-step before giving a final answer. Dramatically improves performance on complex reasoning tasks. The basis of \"thinking\" models like Claude's extended thinking mode.",
+        related: ["Prompt Engineering", "ReAct", "In-context Learning"]
+      },
+      {
+        id: "react",
+        name: "ReAct",
+        fullName: "Reason + Act",
+        body: "A prompting pattern that interleaves reasoning traces with tool actions: the model thinks out loud (\"Thought: I need to search for X\"), calls a tool (\"Action: search(X)\"), observes the result, and repeats. The blueprint behind most modern AI agents.",
+        related: ["Chain of Thought", "AI Agent", "Agentic Loop", "Tool Use"]
+      },
+      {
+        id: "few-shot",
+        name: "Few-shot",
+        fullName: "Few-shot and Zero-shot Prompting",
+        body: "Zero-shot: asking the model to do a task with no examples. Few-shot: providing 2 to 5 input/output examples in the prompt so the model pattern-matches the format. Few-shot is one of the most reliable and underused techniques in prompt engineering.",
+        related: ["Prompt Engineering", "Chain of Thought", "In-context Learning"]
+      },
+      {
+        id: "in-context-learning",
+        name: "In-context Learning",
+        fullName: "In-Context Learning (ICL)",
+        body: "The model's ability to learn new tasks purely from examples in its context window: no weight updates required. You show it examples, and it adapts. The core mechanism behind few-shot prompting and one of the most surprising emergent abilities of large models.",
+        related: ["Few-shot", "Context Window", "Prompt Engineering"]
+      },
+      {
+        id: "context-window",
+        name: "Context Window",
+        fullName: "Context Length / Window",
+        body: "The maximum number of tokens a model can process in a single call: both input and output combined. Claude 3.5 Sonnet has a 200K token context. Longer contexts enable more complex tasks but increase memory and compute costs.",
+        related: ["KV Cache", "Tokenizer", "Context Engineering"]
+      },
+      {
+        id: "structured-output",
+        name: "Structured Output",
+        fullName: "Constrained / Structured Generation",
+        body: "Forcing the model to emit output in a specific format: JSON, XML, a fixed schema: rather than freeform text. Critical for building reliable pipelines where downstream code needs to parse the model's response. Often paired with tool use.",
+        related: ["Tool Use", "Prompt Engineering", "Harness Engineering"]
+      }
+    ]
+  },
+  {
+    category: "Agentic AI",
+    slug: "agentic-ai",
+    description: "LLMs acting autonomously in the world: planning, using tools, and completing multi-step tasks.",
+    terms: [
+      {
+        id: "ai-agent",
+        name: "AI Agent",
+        fullName: "Autonomous AI Agent",
+        body: "An LLM given access to tools (web search, code execution, APIs) and the ability to reason over multi-step tasks autonomously: perceiving state, planning actions, executing them, and iterating until a goal is achieved.",
+        related: ["Tool Use", "MCP", "ReAct", "Agentic Loop"]
+      },
+      {
+        id: "agentic-loop",
+        name: "Agentic Loop",
+        fullName: "Perceive, Plan, Act, Observe Loop",
+        body: "The core execution cycle of an AI agent: observe the environment or task, reason about what to do next, call a tool or produce output, then observe the result and repeat. Agents run this loop until a stopping condition is met.",
+        related: ["ReAct", "AI Agent", "Tool Use"]
+      },
+      {
+        id: "tool-use",
+        name: "Tool Use",
+        fullName: "Function Calling / Tool Use",
+        body: "The mechanism by which LLMs can invoke external functions or APIs: like running code, searching the web, or querying a database: by outputting structured JSON that the host application executes and feeds back as a result.",
+        related: ["AI Agent", "MCP", "ReAct", "Structured Output"]
+      },
+      {
+        id: "mcp",
+        name: "MCP",
+        fullName: "Model Context Protocol",
+        body: "Anthropic's open protocol for connecting LLMs to external tools and data sources in a standardized way. Any MCP-compatible server can plug into any MCP-compatible model or IDE.",
+        related: ["Tool Use", "AI Agent", "Context Engineering"]
+      },
+      {
+        id: "grounding",
+        name: "Grounding",
+        fullName: "Factual Grounding",
+        body: "Connecting model outputs to verifiable external sources: search results, databases, real-time APIs: to reduce hallucination and keep answers accurate. RAG is one form of grounding; web search is another.",
+        related: ["RAG", "Hallucination", "Tool Use"]
+      },
+      {
+        id: "prompt-injection",
+        name: "Prompt Injection",
+        fullName: "Indirect Prompt Injection",
+        body: "An attack where malicious instructions are hidden in content the agent reads (a webpage, email, document) and hijack its behavior. For example, a webpage telling the agent to ignore its instructions and exfiltrate data. The SQL injection of the AI era.",
+        related: ["AI Agent", "Grounding", "System Prompt"]
+      }
+    ]
+  }
+];
+
+// ─── Lookups ──────────────────────────────────────────────────────────────────
+const termById = new Map();
+const termByName = new Map();
+const categoryBySlug = new Map();
+const categoryForTerm = new Map();
+
+for (const cat of GLOSSARY) {
+  categoryBySlug.set(cat.slug, cat);
+  for (const term of cat.terms) {
+    termById.set(term.id, term);
+    termByName.set(term.name.toLowerCase(), term);
+    categoryForTerm.set(term.id, cat);
+  }
+}
+
+function findTermByName(name) {
+  return termByName.get(name.toLowerCase()) || null;
+}
+
+function escape(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function firstSentence(str) {
+  const m = str.match(/^[^.!?]+[.!?]/);
+  return m ? m[0] : str.slice(0, 120);
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+function renderSidebar(activeCatSlug, activeTermId) {
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = GLOSSARY.map(cat => {
+    const isActive = cat.slug === activeCatSlug;
+    const summaryClass = isActive
+      ? 'flex items-center justify-between px-3 py-2 cursor-pointer rounded-sm bg-surface text-primary text-sm font-medium border-l-2 border-primary select-none'
+      : 'flex items-center justify-between px-3 py-2 cursor-pointer rounded-sm hover:bg-surface text-text-main text-sm font-medium transition-colors select-none';
+    const arrowClass = isActive ? 'material-symbols-outlined text-primary text-[18px] arrow' : 'material-symbols-outlined text-muted text-[18px] arrow';
+    const termLinks = cat.terms.map(term => {
+      const isActiveTerm = term.id === activeTermId;
+      const cls = isActiveTerm
+        ? 'text-sm font-mono text-primary block py-1'
+        : 'text-sm font-mono text-muted hover:text-text-main transition-colors block py-1';
+      return `<a class="${cls}" href="#${term.id}">${escape(term.name)}</a>`;
+    }).join('');
+    return `
+      <details class="group" ${isActive ? 'open' : ''}>
+        <summary class="${summaryClass}">
+          <a href="#${cat.slug}" class="flex-1" onclick="event.stopPropagation()">${escape(cat.category)}</a>
+          <span class="${arrowClass}">keyboard_arrow_down</span>
+        </summary>
+        <div class="pl-6 pr-3 py-2 flex flex-col gap-1">${termLinks}</div>
+      </details>`;
+  }).join('');
+
+  // Update nav-home active state
+  const navHome = document.getElementById('nav-home');
+  if (!activeCatSlug && !activeTermId) {
+    navHome.className = 'text-primary text-sm font-medium leading-normal';
+  } else {
+    navHome.className = 'text-text-main text-sm font-medium leading-normal hover:text-primary transition-colors';
+  }
+}
+
+// ─── Right Sidebar ────────────────────────────────────────────────────────────
+function renderRightSidebar(items, title) {
+  const aside = document.getElementById('right-sidebar');
+  if (!items || items.length === 0) {
+    aside.innerHTML = '';
+    return;
+  }
+  const links = items.map((item, i) => {
+    const isFirst = i === 0;
+    const cls = isFirst
+      ? 'block pl-4 text-[13px] font-medium text-text-main border-l-2 border-primary -ml-[1px]'
+      : 'block pl-4 text-[13px] font-medium text-muted hover:text-text-main transition-colors -ml-[1px]';
+    return `<li><a class="${cls}" href="#${item.id}">${escape(item.name)}</a></li>`;
+  }).join('');
+  aside.innerHTML = `
+    <div class="mb-4">
+      <h3 class="text-xs font-semibold text-muted uppercase tracking-wider">${escape(title)}</h3>
+    </div>
+    <ul class="space-y-3 border-l border-border-color">${links}</ul>`;
+}
+
+// ─── Views ────────────────────────────────────────────────────────────────────
+function renderHome() {
+  renderSidebar('', '');
+  renderRightSidebar([], '');
+
+  const totalTerms = GLOSSARY.reduce((n, c) => n + c.terms.length, 0);
+  const cards = GLOSSARY.map(cat => `
+    <a href="#${cat.slug}" class="category-card block border border-border-color rounded-lg p-6 cursor-pointer">
+      <div class="flex items-start justify-between mb-3">
+        <h2 class="text-text-main font-semibold text-[17px] leading-snug">${escape(cat.category)}</h2>
+        <span class="text-muted text-xs border border-border-color rounded px-2 py-0.5 ml-3 shrink-0">${cat.terms.length}</span>
+      </div>
+      <p class="text-muted text-sm leading-relaxed">${escape(cat.description)}</p>
+    </a>`).join('');
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="relative">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <header class="mb-12 relative z-10 max-w-2xl">
+        <h1 class="text-5xl font-display font-semibold tracking-tight gradient-text mb-4">LLM Field Notes</h1>
+        <p class="text-muted text-lg leading-relaxed">A practical glossary of ${totalTerms} terms for engineers building with AI. No fluff — just what you need to know and why it matters.</p>
+      </header>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 relative z-10">${cards}</div>
+      <div class="mt-12 flex justify-center">
+        <a href="${GITHUB_REPO}/issues/new" target="_blank" rel="noopener"
+          class="bg-surface hover:bg-surface-hover border border-border-color text-text-main px-4 py-2 rounded-sm text-sm font-medium transition-colors flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">add</span>
+          Propose a term on GitHub
+        </a>
+      </div>
+    </div>`;
+}
+
+function renderCategory(cat) {
+  renderSidebar(cat.slug, '');
+  renderRightSidebar(cat.terms, 'In this category');
+
+  const rows = cat.terms.map(term => `
+    <a class="term-row flex items-center w-full min-h-[80px] py-4 px-4 -mx-4 rounded-sm group" href="#${term.id}">
+      <div class="flex flex-col gap-1 w-full">
+        <div class="flex items-center justify-between">
+          <h2 class="text-[18px] font-mono font-medium text-text-main group-hover:text-primary transition-colors">${escape(term.name)}</h2>
+          <span class="material-symbols-outlined text-muted opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+        </div>
+        <p class="text-[15px] text-muted line-clamp-1">${escape(firstSentence(term.body))}</p>
+      </div>
+    </a>`).join('');
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="relative">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <header class="mb-12 relative z-10">
+        <div class="flex items-center gap-2 text-muted text-sm mb-4">
+          <a class="hover:text-primary transition-colors" href="#">Categories</a>
+          <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+          <span class="text-text-main">${escape(cat.category)}</span>
+        </div>
+        <h1 class="text-5xl font-display font-semibold tracking-tight gradient-text mb-4">${escape(cat.category)}</h1>
+        <p class="text-muted text-lg leading-relaxed">${escape(cat.description)}</p>
+      </header>
+      <div class="flex flex-col border-t border-border-color">${rows}</div>
+      <div class="mt-12 flex justify-center">
+        <a href="${GITHUB_REPO}/issues/new" target="_blank" rel="noopener"
+          class="bg-surface hover:bg-surface-hover border border-border-color text-text-main px-4 py-2 rounded-sm text-sm font-medium transition-colors flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">add</span>
+          Propose a term on GitHub
+        </a>
+      </div>
+    </div>`;
+}
+
+function renderTerm(term) {
+  const cat = categoryForTerm.get(term.id);
+  renderSidebar(cat ? cat.slug : '', term.id);
+
+  // Related items for right sidebar
+  const relatedItems = term.related
+    .map(name => findTermByName(name))
+    .filter(Boolean)
+    .map(t => ({ id: t.id, name: t.name }));
+  renderRightSidebar(relatedItems, 'Related terms');
+
+  const relatedPills = term.related.map(name => {
+    const t = findTermByName(name);
+    if (t) {
+      return `<a href="#${t.id}" class="inline-flex items-center px-3 py-1 rounded-full border border-border-color text-sm text-muted hover:text-text-main hover:border-primary transition-colors">${escape(name)}</a>`;
+    }
+    return `<span class="inline-flex items-center px-3 py-1 rounded-full border border-border-color text-sm text-muted">${escape(name)}</span>`;
+  }).join('');
+
+  const breadcrumbCat = cat
+    ? `<a class="hover:text-primary transition-colors" href="#">Categories</a>
+       <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+       <a class="hover:text-primary transition-colors" href="#${cat.slug}">${escape(cat.category)}</a>
+       <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+       <span class="text-text-main">${escape(term.name)}</span>`
+    : `<span class="text-text-main">${escape(term.name)}</span>`;
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="relative max-w-2xl">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[200px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <header class="mb-10 relative z-10">
+        <div class="flex items-center gap-2 text-muted text-sm mb-4 flex-wrap">${breadcrumbCat}</div>
+        <h1 class="text-5xl font-display font-semibold tracking-tight gradient-text mb-2">${escape(term.name)}</h1>
+        ${term.fullName !== term.name ? `<p class="text-muted text-base">${escape(term.fullName)}</p>` : ''}
+      </header>
+      <div class="relative z-10">
+        <p class="text-text-main text-lg leading-relaxed mb-10">${escape(term.body)}</p>
+        ${relatedPills ? `
+        <div>
+          <h3 class="text-xs font-semibold text-muted uppercase tracking-wider mb-4">Related</h3>
+          <div class="flex flex-wrap gap-2">${relatedPills}</div>
+        </div>` : ''}
+        <div class="mt-12 pt-8 border-t border-border-color flex items-center justify-between">
+          ${cat ? `<a href="#${cat.slug}" class="text-sm text-muted hover:text-primary transition-colors flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">arrow_back</span> ${escape(cat.category)}</a>` : '<span></span>'}
+          <a href="${GITHUB_REPO}/issues/new" target="_blank" rel="noopener"
+            class="bg-surface hover:bg-surface-hover border border-border-color text-text-main px-4 py-2 rounded-sm text-sm font-medium transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
+            Suggest an edit
+          </a>
+        </div>
+      </div>
+    </div>`;
+
+  // Scroll active term into view in right sidebar
+  setTimeout(() => {
+    const active = document.querySelector('#right-sidebar a.text-text-main');
+    if (active) active.scrollIntoView({ block: 'nearest' });
+  }, 0);
+}
+
+// ─── Router ───────────────────────────────────────────────────────────────────
+function route() {
+  const hash = location.hash.slice(1);
+  window.scrollTo(0, 0);
+
+  if (!hash) {
+    return renderHome();
+  }
+
+  const cat = categoryBySlug.get(hash);
+  if (cat) return renderCategory(cat);
+
+  const term = termById.get(hash);
+  if (term) return renderTerm(term);
+
+  // Fallback to home
+  renderHome();
+}
+
+// ─── Search ───────────────────────────────────────────────────────────────────
+let searchSelectedIndex = -1;
+
+function setSearchIndex(newIndex) {
+  const results = document.querySelectorAll('#search-results .search-result');
+  if (results.length === 0) return;
+  results.forEach(r => r.classList.remove('search-result-active'));
+  searchSelectedIndex = Math.max(0, Math.min(newIndex, results.length - 1));
+  results[searchSelectedIndex].classList.add('search-result-active');
+  results[searchSelectedIndex].scrollIntoView({ block: 'nearest' });
+}
+
+function openSearch() {
+  document.getElementById('search-modal').classList.add('open');
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').innerHTML = '';
+  searchSelectedIndex = -1;
+  document.getElementById('search-input').focus();
+  showAllResults('');
+}
+
+function closeSearch() {
+  document.getElementById('search-modal').classList.remove('open');
+}
+
+function showAllResults(q) {
+  searchSelectedIndex = -1;
+  const container = document.getElementById('search-results');
+  const lower = q.toLowerCase();
+  const allTerms = [];
+  for (const cat of GLOSSARY) {
+    for (const term of cat.terms) {
+      allTerms.push({ term, cat });
+    }
+  }
+
+  const filtered = lower
+    ? allTerms.filter(({ term }) =>
+        term.name.toLowerCase().includes(lower) ||
+        term.fullName.toLowerCase().includes(lower))
+    : allTerms;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<p class="text-muted text-sm text-center py-6">No results for "${escape(q)}"</p>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(({ term, cat }) => `
+    <a href="#${term.id}" onclick="closeSearch()"
+      class="search-result flex items-center justify-between px-4 py-3 cursor-pointer transition-colors">
+      <div>
+        <div class="text-text-main text-sm font-medium">${escape(term.name)}</div>
+        <div class="text-muted text-xs mt-0.5">${escape(cat.category)}</div>
+      </div>
+      <span class="material-symbols-outlined text-muted text-[16px]">arrow_forward</span>
+    </a>`).join('');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('hashchange', route);
+document.addEventListener('DOMContentLoaded', () => {
+  route();
+
+  // Search triggers
+  document.getElementById('search-trigger').addEventListener('click', openSearch);
+  document.getElementById('search-trigger-mobile').addEventListener('click', openSearch);
+  document.getElementById('search-close').addEventListener('click', closeSearch);
+
+  // Close on backdrop click
+  document.getElementById('search-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('search-modal')) closeSearch();
+  });
+
+  // Search input
+  document.getElementById('search-input').addEventListener('input', e => {
+    showAllResults(e.target.value);
+  });
+
+  document.getElementById('search-input').addEventListener('keydown', e => {
+    const results = document.querySelectorAll('#search-results .search-result');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSearchIndex(searchSelectedIndex < 0 ? 0 : searchSelectedIndex + 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (searchSelectedIndex > 0) setSearchIndex(searchSelectedIndex - 1);
+    } else if (e.key === 'Enter' && searchSelectedIndex >= 0 && results[searchSelectedIndex]) {
+      results[searchSelectedIndex].click();
+    }
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      openSearch();
+    }
+    if (e.key === 'Escape') closeSearch();
+  });
+});
+</script>
+</body>
+</html>
