@@ -25,7 +25,7 @@ I thought it might help others too, so I cleaned it up and open sourced it.
 
 ## Live version
 
-Interactive UI with search and category filtering: [what-happens-when-llm](https://tomerjann.github.io/llm-field-notes)
+[Interactive UI with search and category filtering](https://tomerjann.github.io/llm-field-notes)
 
 ## Companion project
 
