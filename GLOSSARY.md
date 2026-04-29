@@ -87,6 +87,15 @@ Models that can process and reason across multiple types of data: text, images, 
 
 ---
 
+### SLM
+**Full name:** Small Language Model
+
+A language model small enough to run on consumer hardware or at the edge: typically under 7B parameters. Models like Phi-3, Gemma 2B, and Mistral 7B trade raw capability for dramatically lower inference cost and the ability to run locally without a GPU cluster. Distillation is the primary technique used to build capable SLMs from larger teacher models.
+
+**Related:** LLM, Distillation, Quantization, Inference
+
+---
+
 ## Memory & Compute
 
 ### KV Cache
@@ -409,3 +418,21 @@ Connecting model outputs to verifiable external sources: search results, databas
 An attack where malicious instructions are hidden in content the agent reads (a webpage, email, document) and hijack its behavior. For example, a webpage telling the agent to ignore its instructions and exfiltrate data. The SQL injection of the AI era.
 
 **Related:** AI Agent, Grounding, System Prompt
+
+---
+
+### Guardrails
+**Full name:** Safety Guardrails
+
+Validation layers that sit around an LLM to detect and block unsafe inputs or outputs: harmful content, PII leakage, off-topic requests, prompt injection attempts. Can be implemented as input filters, output classifiers, or both. The primary mechanism for enforcing policy in production deployments without retraining the model itself.
+
+**Related:** Prompt Injection, RLHF, System Prompt, Evals
+
+---
+
+### Agent Sandbox
+**Full name:** Isolated Execution Sandbox
+
+An isolated environment where an AI agent runs code or executes actions with restricted access to the host system. Prevents a compromised or misbehaving agent from touching the filesystem, network, or processes outside its allowed scope. Critical for any agent that executes untrusted or LLM-generated code.
+
+**Related:** AI Agent, Tool Use, Prompt Injection

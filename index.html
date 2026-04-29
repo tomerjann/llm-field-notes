@@ -194,6 +194,13 @@ const GLOSSARY = [
         fullName: "Multimodal Models",
         body: "Models that can process and reason across multiple types of data: text, images, audio, video, code. Claude 3, GPT-4o, and Gemini are all multimodal. Requires encoding different modalities into a shared latent space the LLM can attend over.",
         related: ["LLM", "Embedding", "Latent Space"]
+      },
+      {
+        id: "slm",
+        name: "SLM",
+        fullName: "Small Language Model",
+        body: "A language model small enough to run on consumer hardware or at the edge: typically under 7B parameters. Models like Phi-3, Gemma 2B, and Mistral 7B trade raw capability for dramatically lower inference cost and the ability to run locally without a GPU cluster. Distillation is the primary technique used to build capable SLMs from larger teacher models.",
+        related: ["LLM", "Distillation", "Quantization", "Inference"]
       }
     ]
   },
@@ -481,6 +488,20 @@ const GLOSSARY = [
         fullName: "Indirect Prompt Injection",
         body: "An attack where malicious instructions are hidden in content the agent reads (a webpage, email, document) and hijack its behavior. For example, a webpage telling the agent to ignore its instructions and exfiltrate data. The SQL injection of the AI era.",
         related: ["AI Agent", "Grounding", "System Prompt"]
+      },
+      {
+        id: "guardrails",
+        name: "Guardrails",
+        fullName: "Safety Guardrails",
+        body: "Validation layers that sit around an LLM to detect and block unsafe inputs or outputs: harmful content, PII leakage, off-topic requests, prompt injection attempts. Can be implemented as input filters, output classifiers, or both. The primary mechanism for enforcing policy in production deployments without retraining the model itself.",
+        related: ["Prompt Injection", "RLHF", "System Prompt", "Evals"]
+      },
+      {
+        id: "agent-sandbox",
+        name: "Agent Sandbox",
+        fullName: "Isolated Execution Sandbox",
+        body: "An isolated environment where an AI agent runs code or executes actions with restricted access to the host system. Prevents a compromised or misbehaving agent from touching the filesystem, network, or processes outside its allowed scope. Critical for any agent that executes untrusted or LLM-generated code.",
+        related: ["AI Agent", "Tool Use", "Prompt Injection"]
       }
     ]
   }
