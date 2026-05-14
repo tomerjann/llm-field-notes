@@ -277,6 +277,15 @@ The craft of building the infrastructure to run evaluations at scale: test runne
 
 ---
 
+### Dogfooding
+**Full name:** Internal Dogfooding
+
+The practice of using your own LLM or AI-powered tools internally as part of your own development workflow before shipping them to customers. AI labs use their frontier models to write code, generate evals, draft research, and run internal tooling. The engineering value is that real internal usage surfaces failure modes that benchmarks miss: context exhaustion under realistic workloads, latency pain points, and tool-use edge cases that structured tests never hit. It also produces high-signal preference data that flows back into RLHF pipelines. Qualitatively different from evals because the users have deep context about what the model should be capable of.
+
+**Related:** Evals, RLHF, Harness Engineering
+
+---
+
 ## Prompting & Context
 
 ### Prompt Engineering
