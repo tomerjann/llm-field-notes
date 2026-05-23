@@ -206,7 +206,20 @@ A sampling strategy that restricts the model to only consider the smallest set o
 
 The raw, unnormalized scores the model outputs for every possible next token before sampling. Logits are converted to probabilities via softmax, then sampled based on temperature and top-p settings.
 
-**Related:** Temperature, Top-p, Tokenizer
+**Related:** Temperature, Top-p, Tokenizer, Softmax
+
+---
+
+### Softmax
+**Full name:** Softmax Function
+
+A mathematical operation that converts a list of raw scores (logits) into a probability distribution — a list of numbers between 0 and 1 that sum to exactly 1.0. Every token in the vocabulary gets a logit score; softmax turns those into "how likely is each token next?"
+
+**Example:** Say the model's top three candidates for the next token are "cat", "dog", and "bird", with raw logits of [3.0, 1.0, 0.5]. Softmax turns that into roughly [0.76, 0.10, 0.07] — probabilities. "cat" is by far the most likely pick, but the others still have a shot. The model then samples from this distribution (shaped by temperature and top-p) to decide what actually gets emitted.
+
+Temperature works by scaling the logits *before* softmax: divide by a number less than 1 and the distribution sharpens (the winner dominates); divide by a number greater than 1 and it flattens (all tokens become more equally likely). Softmax is where that scaling turns into actual probabilities.
+
+**Related:** Logits, Temperature, Top-p
 
 ---
 
